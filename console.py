@@ -19,16 +19,16 @@ class HBNBCommand(cmd.Cmd):
     prompt = '(hbnb) ' if sys.__stdin__.isatty() else ''
 
     classes = {
-               'BaseModel': BaseModel, 'User': User, 'Place': Place,
-               'State': State, 'City': City, 'Amenity': Amenity,
-               'Review': Review
-              }
+        'BaseModel': BaseModel, 'User': User, 'Place': Place,
+        'State': State, 'City': City, 'Amenity': Amenity,
+        'Review': Review
+    }
     dot_cmds = ['all', 'count', 'show', 'destroy', 'update']
     types = {
-             'number_rooms': int, 'number_bathrooms': int,
-             'max_guest': int, 'price_by_night': int,
-             'latitude': float, 'longitude': float
-            }
+        'number_rooms': int, 'number_bathrooms': int,
+        'max_guest': int, 'price_by_night': int,
+        'latitude': float, 'longitude': float
+    }
 
     def preloop(self):
         """Prints if isatty is false"""
@@ -73,7 +73,7 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if pline[0] is '{' and pline[-1] is'}'\
+                    if pline[0] is '{' and pline[- 1] is '}'\
                             and type(eval(pline)) is dict:
                         _args = pline
                     else:
@@ -114,49 +114,50 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, args):
-    """Create an object of any class with given parameters."""
-    if not args:
-        print("** class name missing **")
-        return
+        """Create an object of any class with given parameters."""
+        if not args:
+            print("** class name missing **")
+            return
 
-    args = args.split()
-    class_name = args[0]
+        args = args.split()
+        class_name = args[0]
 
-    if class_name not in HBNBCommand.classes:
-        print("** class doesn't exist **")
-        return
+        if class_name not in HBNBCommand.classes:
+            print("** class doesn't exist **")
+            return
 
-    # Initialize an empty dictionary to store the parameters
-    params = {}
-    for arg in args[1:]:
-        # Split the argument into key and value
-        key_value = arg.split('=')
-        if len(key_value) == 2:
-            key, value = key_value
-            # Check if the value is enclosed in double quotes
-            if value.startswith('"') and value.endswith('"'):
-                # Remove double quotes and replace underscores with spaces
-                value = value[1:-1].replace('_', ' ')
-                # Check if there are escaped double quotes and unescape them
-                value = value.replace('\\"', '"')
-                # Try to cast the value to float or int if possible
-                if '.' in value:
-                    try:
-                        value = float(value)
-                    except ValueError:
-                        pass
-                else:
-                    try:
-                        value = int(value)
-                    except ValueError:
-                        pass
+        # Initialize an empty dictionary to store the parameters
+        params = {}
+        for arg in args[1:]:
+            # Split the argument into key and value
+            key_value = arg.split('=')
+            if len(key_value) == 2:
+                key, value = key_value
+                # Check if the value is enclosed in double quotes
+                if value.startswith('"') and value.endswith('"'):
+                    # Remove double quotes and replace underscores with spaces
+                    value = value[1: -1].replace('_', ' ')
+                    # Check if there are escaped double quotes
+                    # and unescape them
+                    value = value.replace('\\"', '"')
+                    # Try to cast the value to float or int if possible
+                    if '.' in value:
+                        try:
+                            value = float(value)
+                        except ValueError:
+                            pass
+                    else:
+                        try:
+                            value = int(value)
+                        except ValueError:
+                            pass
                 # Add the key and value to the params dictionary
                 params[key] = value
 
-    # Create an instance of the specified class with the parameters
-    new_instance = HBNBCommand.classes[class_name](**params)
-    storage.save()
-    print(new_instance.id)
+        # Create an instance of the specified class with the parameters
+        new_instance = HBNBCommand.classes[class_name](**params)
+        storage.save()
+        print(new_instance.id)
 
     def help_create(self):
         """ Help information for the create method """
@@ -219,7 +220,7 @@ class HBNBCommand(cmd.Cmd):
         key = c_name + "." + c_id
 
         try:
-            del(storage.all()[key])
+            del (storage.all()[key])
             storage.save()
         except KeyError:
             print("** no instance found **")
@@ -351,6 +352,7 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()

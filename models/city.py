@@ -17,4 +17,5 @@ class City(BaseModel, Base):
     # Establish a relationship with the State class
     state = relationship("State", back_populates="cities")
     # Establish a one-to-many relationship with the Place class
-    places = relationship("Place", back_populates="cities", cascade="all, delete-orphan")
+    places = relationship
+    ("Place", back_populates="cities", cascade="all, delete-orphan")

@@ -5,6 +5,7 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 from os import getenv
 from models.base_model import Base
 
+
 class DBStorage:
     """DBStorage class for managing the database storage system."""
     __engine = None

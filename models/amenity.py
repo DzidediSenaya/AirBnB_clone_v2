@@ -16,6 +16,7 @@ class Amenity(BaseModel):
     # Define the Many-To-Many relationship with Place
     place_amenities = relationship("Place", secondary="place_amenity")
 
+
 # Create a table to represent the Many-To-Many relationship
 place_amenity = Table("place_amenity", Base.metadata,
                       Column("place_id", String(60),
