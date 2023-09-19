@@ -9,6 +9,7 @@ from models.review import Review
 from models.state import State
 from models.user import User
 
+
 class FileStorage:
     """Represent an abstracted storage engine.
 
@@ -67,3 +68,4 @@ class FileStorage:
     def close(self):
         """Call the reload method."""
         self.reload()
+       
