@@ -1,7 +1,25 @@
 #!/usr/bin/python3
-""" State Module for HBNB project """
+""" Amenity Module for HBNB project """
 from models.base_model import BaseModel
+from models.place import Place
+from sqlalchemy import Column, String, Table
+from sqlalchemy.orm import relationship
 
 
 class Amenity(BaseModel):
-    name = ""
+    """ Amenity class to store amenity information """
+
+    __tablename__ = "amenities"
+
+    name = Column(String(128), nullable=False)
+
+    # Define the Many-To-Many relationship with Place
+    place_amenities = relationship("Place", secondary="place_amenity")
+
+# Create a table to represent the Many-To-Many relationship
+place_amenity = Table("place_amenity", Base.metadata,
+                      Column("place_id", String(60),
+                             ForeignKey("places.id"), nullable=False),
+                      Column("amenity_id", String(60),
+                             ForeignKey("amenities.id"), nullable=False)
+                      )
