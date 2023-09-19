@@ -9,6 +9,7 @@ class Place(BaseModel, Base):
     """A place to stay"""
 
     __tablename__ = "places"
+
     city_id = Column(String(60), ForeignKey("cities.id"), nullable=False)
     user_id = Column(String(60), ForeignKey("users.id"), nullable=False)
     name = Column(String(128), nullable=False)
@@ -24,3 +25,16 @@ class Place(BaseModel, Base):
     cities = relationship("City", back_populates="places")
     # Define the many-to-one relationship with User
     user = relationship("User", back_populates="places")
+
+    # Define the one-to-many relationship with Review for DBStorage
+    reviews = relationship("Review", backref="place", cascade="all, delete-orphan")
+
+    @property
+    def reviews(self):
+        """Getter attribute for reviews (FileStorage)"""
+        from models import storage
+        reviews_list = []
+        for review in storage.all(Review).values():
+            if review.place_id == self.id:
+                reviews_list.append(review)
+        return reviews_list
