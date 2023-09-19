@@ -9,6 +9,7 @@ from models import storage
 
 Base = declarative_base()
 
+
 class BaseModel(Base):
     """Base class for all models in our hbnb clone"""
     __tablename__ = "base_model"  # Define the table name
