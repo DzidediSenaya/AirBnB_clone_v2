@@ -5,6 +5,7 @@ from sqlalchemy import Column, String, Integer, Float, ForeignKey, Table
 from sqlalchemy.orm import relationship
 from os import getenv
 
+
 # Create an instance of SQLAlchemy Table for the Many-To-Many relationship
 place_amenity = Table("place_amenity", Base.metadata,
                       Column("place_id", String(60),
@@ -39,11 +40,12 @@ class Place(BaseModel, Base):
     # Define the many-to-one relationship with User
     user = relationship("User", back_populates="places")
 
-    # For DBStorage: Define the many-to-many relationship with Amenity
+    # Define the many-to-many relationship with Amenity (for DBStorage)
     if getenv("HBNB_TYPE_STORAGE") == "db":
-        amenities = relationship("Amenity", secondary=place_amenity,
-                                 viewonly=False)
-    else:
+        amenities = relationship("Amenity", secondary=place_amenity, viewonly=False)
+
+    # Getter and setter for amenities (for FileStorage)
+    if getenv("HBNB_TYPE_STORAGE") != "db":
         @property
         def amenities(self):
             """Getter attribute for amenities"""
