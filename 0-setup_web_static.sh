@@ -1,35 +1,42 @@
 #!/usr/bin/env bash
-# This script sets up web servers for the deployment of web_static.
-
-# Install Nginx if it is not already installed
+# sets up web servers for the deployment of web_static
+# Install Nginx if not already installed
 if ! dpkg -l | grep -q nginx; then
-    apt-get -y update
-    apt-get -y install nginx
+    sudo apt-get update
+    sudo apt-get install -y nginx
 fi
+
+# Define directories
+web_static_dir="/data/web_static"
+releases_dir="$web_static_dir/releases/test"
+current_dir="$web_static_dir/current"
+index_html="$releases_dir/index.html"
 
 # Create necessary directories if they don't exist
-mkdir -p /data/web_static/releases/test/
-mkdir -p /data/web_static/shared/
+sudo mkdir -p "$web_static_dir" "$releases_dir"
 
-# Create a fake HTML file for testing
-echo "Fake content for testing" > /data/web_static/releases/test/index.html
+# Create or update index.html file
+echo "<html><head></head><body>Holberton School</body></html>" | sudo tee "$index_html"
 
-# Create a symbolic link to the test release
-if [ -e /data/web_static/current ]; then
-    rm /data/web_static/current
+# Create or update symbolic link (delete and recreate if it exists)
+if [ -L "$current_dir" ]; then
+    sudo rm -f "$current_dir"
 fi
-ln -s /data/web_static/releases/test/ /data/web_static/current
+sudo ln -s "$releases_dir" "$current_dir"
 
-# Give ownership to the ubuntu user and group recursively
-chown -R ubuntu:ubuntu /data/
+# Set ownership recursively
+sudo chown -R ubuntu:ubuntu "$web_static_dir"
 
-# Update Nginx configuration to serve web_static content
-config_file="/etc/nginx/sites-available/default"
-if ! grep -q "location /hbnb_static/" $config_file; then
-    sed -i "/server_name _;/a location /hbnb_static/ { alias /data/web_static/current/; }" $config_file
-fi
+# Update Nginx configuration using alias
+nginx_config="/etc/nginx/sites-available/default"
+echo "server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
 
-# Restart Nginx
-service nginx restart
+    location /hbnb_static/ {
+        alias $current_dir/;
+    }
+}" | sudo tee "$nginx_config"
 
-exit 0
+# Restart Nginx to apply changes
+sudo service nginx restart
