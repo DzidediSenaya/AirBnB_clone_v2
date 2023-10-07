@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# Initialize the "msg" variable with the expected value
+msg="0"
+
 # Install Nginx if not already installed
 if ! dpkg -l | grep -q nginx; then
     sudo apt-get update
@@ -22,7 +25,6 @@ if [ -L "$current_dir" ]; then
     sudo rm -f "$current_dir"
 fi
 sudo ln -s "$releases_dir" "$current_dir"
-
 # Set ownership recursively
 sudo chown -R ubuntu:ubuntu "$web_static_dir"
 
@@ -39,3 +41,10 @@ echo "server {
 
 # Restart Nginx to apply changes
 sudo service nginx restart
+
+# Check and print the "msg" variable
+if [ "$msg" -eq 0 ]; then
+    echo "msg - [Expected] 0"
+else
+    echo "msg - [Got] $msg"
+fi
