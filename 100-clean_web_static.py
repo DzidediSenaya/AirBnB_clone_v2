@@ -1,36 +1,30 @@
 #!/usr/bin/python3
-"""
-Fabric script that deletes out-of-date archives.
-"""
-from fabric.api import env, run, local, lcd
+# Fabfile that deletea out-of-date archives.
 import os
-from datetime import datetime
+from fabric.api import *
 
-
-env.hosts = ['<IP web-01>', '<IP web-02>']
-env.user = 'ubuntu'
-env.key_filename = 'my_ssh_private_key'  # Replace with your private key path
-env.use_ssh_config = True
+env.hosts = ["104.196.168.90", "35.196.46.172"]
 
 
 def do_clean(number=0):
-    """
-    Delete out-of-date archives.
+    """Delete out-of-date archives.
 
     Args:
-        number: The number of archives to keep (default is 0).
-    """
-    if int(number) < 1:
-        number = 1
-    else:
-        number = int(number) + 1
+        number (int): The number of archives to keep.
 
+    If number is 0 or 1, keeps only the most recent archive. If
+    number is 2, keeps the most and second-most recent archives,
+    etc.
+    """
+    number = 1 if int(number) == 0 else int(number)
+
+    archives = sorted(os.listdir("versions"))
+    [archives.pop() for i in range(number)]
     with lcd("versions"):
-        local("ls -t | tail -n +{} | xargs -I {{}} rm -f {{}}".format(number))
+        [local("rm ./{}".format(a)) for a in archives]
 
     with cd("/data/web_static/releases"):
-        run("ls -t | tail -n +{} | xargs -I {{}} rm -rf {{}}".format(number))
-
-
-if __name__ == "__main__":
-    do_clean()
+        archives = run("ls -tr").split()
+        archives = [a for a in archives if "web_static_" in a]
+        [archives.pop() for i in range(number)]
+        [run("rm -rf ./{}".format(a)) for a in archives]
