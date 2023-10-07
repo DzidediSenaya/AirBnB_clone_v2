@@ -1,50 +1,38 @@
 #!/usr/bin/env bash
-# Initialize the "msg" variable with the expected value
-msg="0"
+# Sets up a web server for deployment of web_static.
 
-# Install Nginx if not already installed
-if ! dpkg -l | grep -q nginx; then
-    sudo apt-get update
-    sudo apt-get install -y nginx
-fi
+apt-get update
+apt-get install -y nginx
 
-# Define directories
-web_static_dir="/data/web_static"
-releases_dir="$web_static_dir/releases/test"
-current_dir="$web_static_dir/current"
-index_html="$releases_dir/index.html"
+mkdir -p /data/web_static/releases/test/
+mkdir -p /data/web_static/shared/
+echo "Holberton School" > /data/web_static/releases/test/index.html
+ln -sf /data/web_static/releases/test/ /data/web_static/current
 
-# Create necessary directories if they don't exist
-sudo mkdir -p "$web_static_dir" "$releases_dir"
+chown -R ubuntu /data/
+chgrp -R ubuntu /data/
 
-# Create or update index.html file
-echo "<html><head></head><body>Holberton School</body></html>" | sudo tee "$index_html"
-
-# Create or update symbolic link (delete and recreate if it exists)
-if [ -L "$current_dir" ]; then
-    sudo rm -f "$current_dir"
-fi
-sudo ln -s "$releases_dir" "$current_dir"
-# Set ownership recursively
-sudo chown -R ubuntu:ubuntu "$web_static_dir"
-
-# Update Nginx configuration using alias
-nginx_config="/etc/nginx/sites-available/default"
-echo "server {
+printf %s "server {
     listen 80 default_server;
     listen [::]:80 default_server;
+    add_header X-Served-By $HOSTNAME;
+    root   /var/www/html;
+    index  index.html index.htm;
 
-    location /hbnb_static/ {
-        alias $current_dir/;
+    location /hbnb_static {
+        alias /data/web_static/current;
+        index index.html index.htm;
     }
-}" | sudo tee "$nginx_config"
 
-# Restart Nginx to apply changes
-sudo service nginx restart
+    location /redirect_me {
+        return 301 http://cuberule.com/;
+    }
 
-# Check and print the "msg" variable
-if [ "$msg" -eq 0 ]; then
-    echo "msg - [Expected] 0"
-else
-    echo "msg - [Got] $msg"
-fi
+    error_page 404 /404.html;
+    location /404 {
+      root /var/www/html;
+      internal;
+    }
+}" > /etc/nginx/sites-available/default
+
+service nginx restart
