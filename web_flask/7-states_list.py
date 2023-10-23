@@ -2,6 +2,9 @@
 """
 Starts a Flask web application that displays a list of states.
 """
+from models import storage
+from flask import Flask
+from flask import render_template
 
 app = Flask(__name__)
 
