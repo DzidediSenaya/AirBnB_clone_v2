@@ -10,31 +10,24 @@ Routes:
 This script requires that Flask and SQLAlchemy are installed.
 """
 
-from models import storage
-from flask import Flask, render_template
-
 app = Flask(__name__)
 
 
-@app.route('/cities_by_states', strict_slashes=False)
+@app.route("/cities_by_states", strict_slashes=False)
 def cities_by_states():
-    """
-    Handles the /cities_by_states route and renders the HTML template.
+    """Displays an HTML page with a list of all states and related cities.
 
-    Returns:
-        Rendered HTML template with a list of states and cities.
+    States/cities are sorted by name.
     """
-    states = storage.all("State").values()
-    return render_template('8-cities_by_states.html', states=states)
+    states = storage.all("State")
+    return render_template("8-cities_by_states.html", states=states)
 
 
 @app.teardown_appcontext
-def teardown(exception):
-    """
-    Teardown function to close the storage engine's session after each request.
-    """
+def teardown(exc):
+    """Remove the current SQLAlchemy session."""
     storage.close()
 
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0")
