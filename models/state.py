@@ -33,13 +33,3 @@ class State(BaseModel, Base):
                 if city.state_id == self.id:
                     city_list.append(city)
             return city_list
-
-    if storage_type != "db":
-    @property
-    def cities(self):
-        """Return the list of City objects linked to the current State"""
-        cities_list = []
-        for city in list(models.storage.all(City).values()):
-            if city.state_id == self.id:
-                cities_list.append(city)
-        return cities_list
