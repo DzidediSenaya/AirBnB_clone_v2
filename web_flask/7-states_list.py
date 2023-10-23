@@ -3,10 +3,9 @@
 Starts a Flask web application that displays a list of states.
 """
 from models import storage
-from flask import Flask
-from flask import render_template
+from flask import Flask, render_template
 
-app = Flask(__name__)
+app = Flask(__name)
 
 
 @app.route("/states_list", strict_slashes=False)
@@ -16,7 +15,7 @@ def states_list():
     States are sorted by name.
     """
     states = storage.all("State")
-    return render_template("7-states_list.html", states=states)
+    return render_template("7-states_list.html", states=states), 200
 
 
 @app.teardown_appcontext
