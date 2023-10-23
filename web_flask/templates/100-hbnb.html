@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HBNB</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/3-footer.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/3-header.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/4-common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/6-filters.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/8-places.css') }}">
+</head>
+<body>
+    <!-- Navigation bar -->
+    <nav class="navbar navbar-expand-md navbar-light bg-light">
+        <a class="navbar-brand" href="#">HBNB</a>
+    </nav>
+
+    <!-- Filter section -->
+    <div class="container">
+        <div class="filters">
+            <div class="row">
+                <div class="col-md-3">
+                    <h3>&nbsp;</h3>
+                    <!-- Add filter options for States here -->
+                    {% for state in states %}
+                        <label class="form-check-label">
+                            <input type="checkbox" class="form-check-input">
+                            {{ state.name }}
+                        </label>
+                    {% endfor %}
+                </div>
+                <div class="col-md-3">
+                    <h3>&nbsp;</h3>
+                    <!-- Add filter options for Cities here -->
+                    {% for city in cities %}
+                        <label class="form-check-label">
+                            <input type="checkbox" class="form-check-input">
+                            {{ city.name }}
+                        </label>
+                    {% endfor %}
+                </div>
+                <div class="col-md-3">
+                    <h3>&nbsp;</h3>
+                    <!-- Add filter options for Amenities here -->
+                    {% for amenity in amenities %}
+                        <label class="form-check-label">
+                            <input type="checkbox" class="form-check-input">
+                            {{ amenity.name }}
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Places section -->
+    <div class="container">
+        <div class="places">
+            <!-- Display Place objects here -->
+            {% for place in places %}
+                <div class="place">
+                    <span class="price_by_night">{{ place.price_by_night }} per night</span>
+                    <h2 class="name">{{ place.name }}</h2>
+                    <!-- Add more details about the place here -->
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
