@@ -1,14 +1,13 @@
 #!/usr/bin/python3
-"""
-Starts a Flask web application to display a list of states and their cities.
-The application listens on 0.0.0.0 and port 5000.
-Uses the storage engine to retrieve data from the database.
+"""Starts a Flask web application.
 
+The application listens on 0.0.0.0, port 5000.
 Routes:
-    /cities_by_states: Display a list of states and their cities.
-
-This script requires that Flask and SQLAlchemy are installed.
+    /cities_by_states: HTML page with a list of all states and related cities.
 """
+from models import storage
+from flask import Flask
+from flask import render_template
 
 app = Flask(__name__)
 
