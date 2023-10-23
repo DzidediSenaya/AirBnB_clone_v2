@@ -2,27 +2,25 @@
 """
 Starts a Flask web application that displays a list of states.
 """
-from flask import Flask, render_template
-from models import storage
-from models.state import State
 
-app = Flask(__name)
+app = Flask(__name__)
 
 
-@app.route('/states_list', strict_slashes=False)
+@app.route("/states_list", strict_slashes=False)
 def states_list():
-    """Display a list of states sorted by name."""
-    states = list(storage.all(State).values())
-    sorted_states = sorted(states, key=lambda x: x.name)
+    """Displays an HTML page with a list of all State objects in DBStorage.
 
-    return render_template('7-states_list.html', states=sorted_states)
+    States are sorted by name.
+    """
+    states = storage.all("State")
+    return render_template("7-states_list.html", states=states)
 
 
 @app.teardown_appcontext
-def teardown(exception):
-    """Remove the current SQLAlchemy Session."""
+def teardown(exc):
+    """Remove the current SQLAlchemy session."""
     storage.close()
 
 
-if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0")
